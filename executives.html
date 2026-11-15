@@ -8,7 +8,71 @@
     <meta name="description" content="Meet the interim executive committee of Central Primary School Misau Old Boys Association.">
 
     <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        .executive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 25px;
+            margin: 35px 0;
+        }
+
+        .executive-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            text-align: center;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+            transition: transform 0.3s ease;
+        }
+
+        .executive-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .executive-photo {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+            background: #e9eee9;
+        }
+
+        .executive-info {
+            padding: 20px 15px;
+        }
+
+        .executive-info h3 {
+            margin: 0 0 8px;
+            color: #123d2b;
+        }
+
+        .executive-info p {
+            margin: 0;
+            color: #666;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .photo-placeholder {
+            height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: #e9eee9;
+            color: #52705e;
+            font-size: 15px;
+        }
+
+        .photo-placeholder span {
+            font-size: 55px;
+            margin-bottom: 8px;
+        }
+    </style>
 </head>
+
 <body>
 
     <div class="announcement">
@@ -59,61 +123,94 @@
             </p>
         </div>
 
-        <div class="news-grid">
+        <div class="executive-grid">
 
-            <div class="news-card">
-                <h3>Ahmed Yaya</h3>
-                <p>President</p>
+            <div class="executive-card">
+                <img class="executive-photo" src="assets/images/executives/ahmed-yaya.jpg" alt="Ahmed Yaya" onerror="this.outerHTML='<div class=&quot;photo-placeholder&quot;><span>👤</span>Photo Coming Soon</div>'">
+                <div class="executive-info">
+                    <h3>Ahmed Yaya</h3>
+                    <p>President</p>
+                </div>
             </div>
 
-            <div class="news-card">
-                <h3>Fatima Abubakar</h3>
-                <p>Vice President</p>
+            <div class="executive-card">
+                <img class="executive-photo" src="assets/images/executives/fatima-abubakar.jpg" alt="Fatima Abubakar" onerror="this.outerHTML='<div class=&quot;photo-placeholder&quot;><span>👤</span>Photo Coming Soon</div>'">
+                <div class="executive-info">
+                    <h3>Fatima Abubakar</h3>
+                    <p>Vice President</p>
+                </div>
             </div>
 
-            <div class="news-card">
-                <h3>Umar Muhammad</h3>
-                <p>Secretary General</p>
+            <div class="executive-card">
+                <img class="executive-photo" src="assets/images/executives/umar-muhammad.jpg" alt="Umar Muhammad" onerror="this.outerHTML='<div class=&quot;photo-placeholder&quot;><span>👤</span>Photo Coming Soon</div>'">
+                <div class="executive-info">
+                    <h3>Umar Muhammad</h3>
+                    <p>Secretary General</p>
+                </div>
             </div>
 
-            <div class="news-card">
-                <h3>Sani B. Saleh</h3>
-                <p>Assistant Secretary General</p>
+            <div class="executive-card">
+                <img class="executive-photo" src="assets/images/executives/sani-b-saleh.jpg" alt="Sani B. Saleh" onerror="this.outerHTML='<div class=&quot;photo-placeholder&quot;><span>👤</span>Photo Coming Soon</div>'">
+                <div class="executive-info">
+                    <h3>Sani B. Saleh</h3>
+                    <p>Assistant Secretary General</p>
+                </div>
             </div>
 
-            <div class="news-card">
-                <h3>Mohammed Kaka</h3>
-                <p>Public Relations Officer</p>
+            <div class="executive-card">
+                <img class="executive-photo" src="assets/images/executives/mohammed-kaka.jpg" alt="Mohammed Kaka" onerror="this.outerHTML='<div class=&quot;photo-placeholder&quot;><span>👤</span>Photo Coming Soon</div>'">
+                <div class="executive-info">
+                    <h3>Mohammed Kaka</h3>
+                    <p>Public Relations Officer</p>
+                </div>
             </div>
 
-            <div class="news-card">
-                <h3>Ahmed Yarima Danrimi</h3>
-                <p>Welfare Officer I</p>
+            <div class="executive-card">
+                <img class="executive-photo" src="assets/images/executives/ahmed-yarima.jpg" alt="Ahmed Yarima Danrimi" onerror="this.outerHTML='<div class=&quot;photo-placeholder&quot;><span>👤</span>Photo Coming Soon</div>'">
+                <div class="executive-info">
+                    <h3>Ahmed Yarima Danrimi</h3>
+                    <p>Welfare Officer I</p>
+                </div>
             </div>
 
-            <div class="news-card">
-                <h3>Ladi Ado</h3>
-                <p>Welfare Officer II</p>
+            <div class="executive-card">
+                <img class="executive-photo" src="assets/images/executives/ladi-ado.jpg" alt="Ladi Ado" onerror="this.outerHTML='<div class=&quot;photo-placeholder&quot;><span>👤</span>Photo Coming Soon</div>'">
+                <div class="executive-info">
+                    <h3>Ladi Ado</h3>
+                    <p>Welfare Officer II</p>
+                </div>
             </div>
 
-            <div class="news-card">
-                <h3>Lamido Ali</h3>
-                <p>Auditor</p>
+            <div class="executive-card">
+                <img class="executive-photo" src="assets/images/executives/lamido-ali.jpg" alt="Lamido Ali" onerror="this.outerHTML='<div class=&quot;photo-placeholder&quot;><span>👤</span>Photo Coming Soon</div>'">
+                <div class="executive-info">
+                    <h3>Lamido Ali</h3>
+                    <p>Auditor</p>
+                </div>
             </div>
 
-            <div class="news-card">
-                <h3>Khalil Abdullahi</h3>
-                <p>Legal Adviser</p>
+            <div class="executive-card">
+                <img class="executive-photo" src="assets/images/executives/khalil-abdullahi.jpg" alt="Khalil Abdullahi" onerror="this.outerHTML='<div class=&quot;photo-placeholder&quot;><span>👤</span>Photo Coming Soon</div>'">
+                <div class="executive-info">
+                    <h3>Khalil Abdullahi</h3>
+                    <p>Legal Adviser</p>
+                </div>
             </div>
 
-            <div class="news-card">
-                <h3>Bashar Abdulkadir</h3>
-                <p>Treasurer</p>
+            <div class="executive-card">
+                <img class="executive-photo" src="assets/images/executives/bashar-abdulkadir.jpg" alt="Bashar Abdulkadir" onerror="this.outerHTML='<div class=&quot;photo-placeholder&quot;><span>👤</span>Photo Coming Soon</div>'">
+                <div class="executive-info">
+                    <h3>Bashar Abdulkadir</h3>
+                    <p>Treasurer</p>
+                </div>
             </div>
 
-            <div class="news-card">
-                <h3>Aliyu Lamdo</h3>
-                <p>Financial Secretary</p>
+            <div class="executive-card">
+                <img class="executive-photo" src="assets/images/executives/aliyu-lamdo.jpg" alt="Aliyu Lamdo" onerror="this.outerHTML='<div class=&quot;photo-placeholder&quot;><span>👤</span>Photo Coming Soon</div>'">
+                <div class="executive-info">
+                    <h3>Aliyu Lamdo</h3>
+                    <p>Financial Secretary</p>
+                </div>
             </div>
 
         </div>
