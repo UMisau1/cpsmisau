@@ -1,0 +1,323 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Membership Registration | CPS Misau Old Boys Association</title>
+
+    <meta name="description"
+          content="Register as a former pupil of Central Primary School Misau Old Boys Association.">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <div class="announcement">
+        United in Friendship, Committed to Excellence.
+    </div>
+
+    <header>
+        <div class="container">
+
+            <div class="logo">
+                <span>CPS Misau Old Boys Association</span>
+            </div>
+
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="executives.html">Executives</a></li>
+                    <li><a href="members.html">Members</a></li>
+                    <li><a href="reunion.html">Reunion</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="news.html">News</a></li>
+                    <li><a href="memory.html">In Memory</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+
+            <a href="register.html" class="btn">Join Us</a>
+
+        </div>
+    </header>
+
+    <section class="page-hero">
+        <div class="container">
+            <h1>Membership Registration</h1>
+
+            <p>
+                Become Part of the Central Primary School
+                Misau Old Boys Association.
+            </p>
+        </div>
+    </section>
+
+    <section class="container">
+
+        <div class="section-title">
+            <h2>Register as a Former Pupil</h2>
+
+            <p>
+                This registration is open to all former pupils
+                of Central Primary School Misau, regardless
+                of their graduating year.
+            </p>
+        </div>
+
+        <form class="contact-form" id="registrationForm">
+
+            <div class="form-group">
+                <label for="fullName">Full Name *</label>
+
+                <input
+                    type="text"
+                    id="fullName"
+                    name="fullName"
+                    placeholder="Enter your full name"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+
+                <select id="gender" name="gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number *</label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="e.g. 08012345678"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email address">
+            </div>
+
+            <div class="form-group">
+                <label for="graduationSet">Graduating Set / Year *</label>
+
+                <input
+                    type="text"
+                    id="graduationSet"
+                    name="graduationSet"
+                    placeholder="e.g. Class of 1988"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="admissionYear">Year You Joined the School</label>
+
+                <input
+                    type="number"
+                    id="admissionYear"
+                    name="admissionYear"
+                    placeholder="e.g. 1982"
+                    min="1900"
+                    max="2100">
+            </div>
+
+            <div class="form-group">
+                <label for="occupation">Occupation</label>
+
+                <input
+                    type="text"
+                    id="occupation"
+                    name="occupation"
+                    placeholder="Enter your occupation">
+            </div>
+
+            <div class="form-group">
+                <label for="location">Current Location *</label>
+
+                <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    placeholder="City, State, Country"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Contact Address</label>
+
+                <textarea
+                    id="address"
+                    name="address"
+                    rows="3"
+                    placeholder="Enter your contact address"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="interest">How Would You Like to Participate?</label>
+
+                <select id="interest" name="interest">
+                    <option value="">Select an option</option>
+                    <option value="General Membership">General Membership</option>
+                    <option value="School Development">School Development</option>
+                    <option value="Welfare Support">Welfare Support</option>
+                    <option value="Education Support">Education Support</option>
+                    <option value="Volunteering">Volunteering</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    <input
+                        type="checkbox"
+                        id="consent"
+                        name="consent"
+                        value="Yes"
+                        required>
+
+                    I confirm that the information provided is accurate
+                    and consent to its use for Association membership
+                    and coordination purposes. *
+                </label>
+
+            </div>
+
+            <button type="submit" class="btn">
+                Submit Registration
+            </button>
+
+        </form>
+
+    </section>
+
+    <section class="cta">
+        <div class="container">
+
+            <h2>One School, One Association</h2>
+
+            <p>
+                Your membership helps strengthen the connection
+                between generations of former pupils.
+            </p>
+
+            <a href="about.html" class="btn">Learn About Us</a>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+
+            <p>
+                &copy; <span id="currentYear"></span>
+                Central Primary School Misau Old Boys Association.
+                All Rights Reserved.
+            </p>
+
+        </div>
+    </footer>
+
+   <script src="assets/js/script.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.getElementById("registrationForm");
+    const button = form.querySelector('button[type="submit"]');
+
+    const message = document.createElement("p");
+    message.id = "registrationMessage";
+    message.style.marginTop = "15px";
+    message.style.fontWeight = "bold";
+    form.appendChild(message);
+
+    if (!window.supabase) {
+        message.style.color = "red";
+        message.textContent = "Supabase library failed to load. Check your internet connection.";
+        return;
+    }
+
+    const db = window.supabase.createClient(
+        "https://oqoloaxgyyddpniyfzyc.supabase.co",
+        "sb_publishable_L9eNi7R91m_CLtk6uW5EbA_IRGdfP6C"
+    );
+
+    form.addEventListener("submit", async function (event) {
+
+        event.preventDefault();
+
+        message.textContent = "";
+        button.disabled = true;
+        button.textContent = "Submitting...";
+
+        const data = {
+            full_name: document.getElementById("fullName").value.trim(),
+            gender: document.getElementById("gender").value || null,
+            phone: document.getElementById("phone").value.trim(),
+            email: document.getElementById("email").value.trim() || null,
+            graduation_set: document.getElementById("graduationSet").value.trim(),
+            admission_year: document.getElementById("admissionYear").value
+                ? Number(document.getElementById("admissionYear").value)
+                : null,
+            occupation: document.getElementById("occupation").value.trim() || null,
+            location: document.getElementById("location").value.trim(),
+            address: document.getElementById("address").value.trim() || null,
+            interest: document.getElementById("interest").value || null,
+            consent: document.getElementById("consent").checked
+        };
+
+        try {
+
+            const { error } = await db
+                .from("member_registrations")
+                .insert([data]);
+
+            if (error) {
+                throw error;
+            }
+
+            message.style.color = "green";
+            message.textContent = "Registration submitted successfully!";
+
+            form.reset();
+
+        } catch (error) {
+
+            console.error("Supabase Error:", error);
+
+            message.style.color = "red";
+            message.textContent = "Registration failed: " + error.message;
+
+        } finally {
+
+            button.disabled = false;
+            button.textContent = "Submit Registration";
+
+        }
+
+    });
+
+});
+</script>
+
+</body>
+</html>

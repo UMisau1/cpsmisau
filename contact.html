@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Contact Us | CPS Misau Old Boys Association</title>
+    <meta name="description" content="Contact Central Primary School Misau Old Boys Association for enquiries, membership and collaboration.">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <div class="announcement">
+        United in Friendship, Committed to Excellence.
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span>CPS Misau Old Boys Association</span>
+            </div>
+
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="executives.html">Executives</a></li>
+                    <li><a href="members.html">Members</a></li>
+                    <li><a href="reunion.html">Reunion</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="news.html">News</a></li>
+                    <li><a href="memory.html">In Memory</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+
+            <a href="register.html" class="btn">Join Us</a>
+        </div>
+    </header>
+
+    <section class="page-hero">
+        <div class="container">
+            <h1>Contact Our Association</h1>
+            <p>
+                We Welcome Your Questions, Suggestions
+                and Contributions.
+            </p>
+        </div>
+    </section>
+
+    <section class="container">
+
+        <div class="section-title">
+            <h2>Get in Touch</h2>
+            <p>
+                Contact Central Primary School Misau Old Boys
+                Association for membership enquiries,
+                meetings and school development initiatives.
+            </p>
+        </div>
+
+        <div class="features">
+
+            <div class="feature">
+                <h3>Association</h3>
+                <p>Central Primary School Misau Old Boys Association</p>
+            </div>
+
+            <div class="feature">
+                <h3>Location</h3>
+                <p>Central Primary School, Misau, Bauchi State, Nigeria.</p>
+            </div>
+
+            <div class="feature">
+                <h3>Membership</h3>
+                <p>
+                    Former pupils from all graduating sets
+                    are welcome to register.
+                </p>
+                <a href="register.html" class="btn">Join Us</a>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="container">
+
+        <div class="section-title">
+            <h2>Send Us a Message</h2>
+            <p>
+                Please use the form below to send your
+                enquiry to the Association.
+            </p>
+        </div>
+
+        <form class="contact-form" id="contactForm">
+
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter your full name"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email address"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input
+                    type="text"
+                    id="subject"
+                    placeholder="Enter message subject"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Your Message</label>
+                <textarea
+                    id="message"
+                    rows="6"
+                    placeholder="Write your message here..."
+                    required></textarea>
+            </div>
+
+            <button type="submit" class="btn" id="sendButton">
+                Send Message
+            </button>
+
+            <p id="contactFeedback" role="status" aria-live="polite"></p>
+
+        </form>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2>Let's Build a Stronger Association</h2>
+            <p>
+                Your participation and ideas are valuable
+                to the future of our school community.
+            </p>
+            <a href="register.html" class="btn">Register Now</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>
+                &copy; <span id="currentYear"></span>
+                Central Primary School Misau Old Boys Association.
+                All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        const SUPABASE_URL =
+            "https://oqoloaxgyyddpniyfzyc.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable_L9eNi7R91m_CLtk6uW5EbA_IRGdfP6C";
+
+        const db = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+        const contactForm = document.getElementById("contactForm");
+        const sendButton = document.getElementById("sendButton");
+        const feedback = document.getElementById("contactFeedback");
+
+        contactForm.addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            if (!contactForm.reportValidity()) return;
+
+            const fullName = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const subject = document.getElementById("subject").value.trim();
+            const message = document.getElementById("message").value.trim();
+
+            if (!fullName || !email || !subject || !message) {
+                feedback.textContent = "Please complete all fields.";
+                feedback.style.color = "red";
+                return;
+            }
+
+            sendButton.disabled = true;
+            sendButton.textContent = "Sending...";
+            feedback.textContent = "Please wait while your message is being sent.";
+            feedback.style.color = "#555";
+
+            try {
+
+                const { error } = await db
+                    .from("contact_messages")
+                    .insert([{
+                        full_name: fullName,
+                        email: email,
+                        subject: subject,
+                        message: message
+                    }]);
+
+                if (error) {
+                    throw error;
+                }
+
+                feedback.textContent =
+                    "Your message has been submitted successfully!";
+
+                feedback.style.color = "green";
+
+                contactForm.reset();
+
+            } catch (error) {
+
+                console.error("Contact submission error:", error);
+
+                feedback.textContent =
+                    "Message could not be sent. Please try again.";
+
+                feedback.style.color = "red";
+
+            } finally {
+
+                sendButton.disabled = false;
+                sendButton.textContent = "Send Message";
+
+            }
+
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>News & Updates | CPS Misau Old Boys Association</title>
+    <meta name="description" content="Latest news, announcements and updates from Central Primary School Misau Old Boys Association.">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        .dynamic-news-image {
+            width: 100%;
+            max-height: 260px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .dynamic-news-date {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .dynamic-news-content {
+            white-space: pre-line;
+            line-height: 1.7;
+        }
+
+        #newsStatus {
+            text-align: center;
+            margin: 15px 0;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="announcement">
+        United in Friendship, Committed to Excellence.
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span>CPS Misau Old Boys Association</span>
+            </div>
+
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="executives.html">Executives</a></li>
+                    <li><a href="members.html">Members</a></li>
+                    <li><a href="reunion.html">Reunion</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="news.html">News</a></li>
+                    <li><a href="memory.html">In Memory</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+
+            <a href="register.html" class="btn">Join Us</a>
+        </div>
+    </header>
+
+    <section class="page-hero">
+        <div class="container">
+            <h1>News & Updates</h1>
+            <p>
+                Stay Informed About Our Association,
+                Meetings and School Development Activities.
+            </p>
+        </div>
+    </section>
+
+    <section class="container">
+
+        <div class="section-title">
+            <h2>Latest News & Announcements</h2>
+            <p>
+                Official information and updates from
+                Central Primary School Misau Old Boys Association.
+            </p>
+        </div>
+
+        <p id="newsStatus">Loading latest updates...</p>
+
+        <div class="news-grid" id="newsGrid">
+
+            <div class="news-card">
+                <h3>Inaugural Association Meeting</h3>
+                <p><strong>Date:</strong> 30 May 2026</p>
+                <p>
+                    The Class of 1988 held its inaugural meeting
+                    at the school premises and discussed the
+                    need to connect former pupils across
+                    different graduating sets.
+                </p>
+            </div>
+
+            <div class="news-card">
+                <h3>Interim Executive Committee</h3>
+                <p><strong>Update:</strong> 2026</p>
+                <p>
+                    An interim executive committee of eleven
+                    members was selected at the inaugural
+                    meeting to coordinate the Association's
+                    activities.
+                </p>
+            </div>
+
+            <div class="news-card">
+                <h3>School Development Priorities</h3>
+                <p><strong>Update:</strong> 2026</p>
+                <p>
+                    Members discussed the shortage of teachers,
+                    desks and benches, learning materials,
+                    security and school infrastructure.
+                </p>
+            </div>
+
+            <div class="news-card">
+                <h3>Invitation to Former Pupils</h3>
+                <p><strong>Announcement:</strong> 2026</p>
+                <p>
+                    Former pupils from all graduating sets
+                    are encouraged to connect and participate
+                    in the wider Association.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2>Stay Connected With Us</h2>
+            <p>
+                Join the Association to receive important
+                announcements and future updates.
+            </p>
+            <a href="register.html" class="btn">Register Now</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>
+                &copy; <span id="currentYear"></span>
+                Central Primary School Misau Old Boys Association.
+                All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+    (function () {
+
+        const SUPABASE_URL = "https://oqoloaxgyyddpniyfzyc.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_L9eNi7R91m_CLtk6uW5EbA_IRGdfP6C";
+
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+        const newsGrid = document.getElementById("newsGrid");
+        const newsStatus = document.getElementById("newsStatus");
+
+        function escapeHTML(value) {
+            return String(value ?? "").replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            })[char]);
+        }
+
+        function safeImageUrl(value) {
+            if (!value) return "";
+
+            try {
+                const url = new URL(value);
+                return url.protocol === "https:" ? url.href : "";
+            } catch {
+                return "";
+            }
+        }
+
+        async function loadPublishedNews() {
+
+            const { data, error } = await supabaseClient
+                .from("news_posts")
+                .select("title, summary, content, category, image_url, created_at")
+                .eq("status", "published")
+                .order("created_at", { ascending: false });
+
+            if (error) {
+                newsStatus.textContent =
+                    "Unable to load latest news at the moment.";
+                console.error("News loading error:", error.message);
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                newsStatus.textContent = "No new published updates yet.";
+                return;
+            }
+
+            newsStatus.textContent = "Latest updates from the Association.";
+
+            const cards = data.map(post => {
+
+                const imageUrl = safeImageUrl(post.image_url);
+
+                const date = post.created_at
+                    ? new Date(post.created_at).toLocaleDateString()
+                    : "";
+
+                const description = post.summary || post.content || "";
+
+                return `
+                    <div class="news-card">
+
+                        ${imageUrl ? `
+                            <img
+                                src="${escapeHTML(imageUrl)}"
+                                alt="News image"
+                                class="dynamic-news-image"
+                                loading="lazy"
+                            >
+                        ` : ""}
+
+                        <h3>${escapeHTML(post.title)}</h3>
+
+                        <p class="dynamic-news-date">
+                            <strong>${escapeHTML(post.category || "General")}</strong>
+                            ${date ? " | " + escapeHTML(date) : ""}
+                        </p>
+
+                        <p class="dynamic-news-content">
+                            ${escapeHTML(description)}
+                        </p>
+
+                    </div>
+                `;
+            }).join("");
+
+            newsGrid.insertAdjacentHTML("afterbegin", cards);
+        }
+
+        loadPublishedNews();
+
+    })();
+    </script>
+
+    <script src="assets/js/script.js"></script>
+
+</body>
+</html>

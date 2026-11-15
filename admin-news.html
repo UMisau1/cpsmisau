@@ -1,0 +1,422 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin News Management | CPS Misau</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f6f9;color:#222}
+header{background:#123d2b;color:white;padding:20px}
+header h2{margin:0 0 8px}
+header a{color:white;margin-right:15px;text-decoration:none}
+.container{max-width:1100px;margin:25px auto;padding:15px}
+.panel{background:white;padding:22px;border-radius:10px;margin-bottom:22px;box-shadow:0 2px 10px #0000000d}
+h3{margin-top:0;color:#164b34}
+label{display:block;margin:13px 0 6px;font-weight:bold}
+input,textarea,select{width:100%;padding:12px;border:1px solid #ccc;border-radius:6px;font-size:15px}
+textarea{min-height:130px;resize:vertical}
+button{border:0;padding:11px 16px;border-radius:6px;cursor:pointer;font-weight:bold;margin:5px 5px 5px 0}
+.primary{background:#176b45;color:white}
+.secondary{background:#e6e9ed;color:#222}
+.danger{background:#b52b2b;color:white}
+.edit{background:#d69b20;color:white}
+.news-card{border:1px solid #ddd;padding:15px;border-radius:8px;margin:14px 0;display:flex;gap:15px;flex-wrap:wrap}
+.news-card img{width:150px;height:120px;object-fit:cover;border-radius:6px}
+.news-info{flex:1;min-width:200px}
+.status{font-weight:bold}
+.published{color:green}
+.draft{color:#b47700}
+#message{padding:12px;border-radius:6px;margin-bottom:15px;display:none}
+.success{background:#d8f5e3;color:#145b31}
+.error{background:#ffe0e0;color:#8b1717}
+.small{color:#666;font-size:13px}
+@media(max-width:600px){.news-card{display:block}.news-card img{width:100%;height:190px}}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>CPS Misau Old Boys Association</h2>
+<p>Admin News Management</p>
+
+<a href="index.html">Home</a>
+<a href="admin-dashboard.html">Admin Dashboard</a>
+<a href="admin-messages.html">Manage Messages</a>
+<a href="news.html">View News Page</a>
+<a href="#" id="logoutBtn">Logout</a>
+
+</header>
+
+<div class="container">
+
+<div id="message"></div>
+
+<section class="panel">
+<h3 id="formHeading">Add New News</h3>
+
+<form id="newsForm">
+
+<input type="hidden" id="newsId">
+
+<label>News Title *</label>
+<input type="text" id="title" required maxlength="200"
+placeholder="Enter news title">
+
+<label>Short Summary</label>
+<textarea id="summary" rows="3"
+placeholder="Write a short summary"></textarea>
+
+<label>Full News Content *</label>
+<textarea id="content" required
+placeholder="Write the full news content"></textarea>
+
+<label>Category</label>
+<select id="category">
+<option value="General">General</option>
+<option value="Association">Association</option>
+<option value="School Development">School Development</option>
+<option value="Events">Events</option>
+<option value="Announcements">Announcements</option>
+</select>
+
+<label>News Image</label>
+<input type="file" id="image" accept="image/*">
+<p class="small">Za ka iya barin wannan wajen babu komai idan ba ka da sabon hoto.</p>
+
+<label>Publication Status</label>
+<select id="status">
+<option value="draft">Save as Draft</option>
+<option value="published">Publish</option>
+</select>
+
+<br><br>
+
+<button type="submit" class="primary" id="saveBtn">
+Save News
+</button>
+
+<button type="button" class="secondary" id="cancelBtn" style="display:none">
+Cancel Edit
+</button>
+
+</form>
+</section>
+
+<section class="panel">
+<h3>All News Posts</h3>
+<button type="button" class="secondary" id="refreshBtn">
+Refresh News
+</button>
+<div id="newsList">Loading news...</div>
+</section>
+
+</div>
+
+<script>
+(function () {
+const SUPABASE_URL = "https://oqoloaxgyyddpniyfzyc.supabase.co";
+const SUPABASE_KEY = "sb_publishable_L9eNi7R91m_CLtk6uW5EbA_IRGdfP6C";
+
+const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+const form = document.getElementById("newsForm");
+const newsList = document.getElementById("newsList");
+const messageBox = document.getElementById("message");
+
+let currentUser = null;
+
+function showMessage(message, type = "success") {
+    messageBox.textContent = message;
+    messageBox.className = type;
+    messageBox.style.display = "block";
+    window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[char]);
+}
+
+function safeImageUrl(value) {
+    if (!value) return "";
+    try {
+        const url = new URL(value);
+        return url.protocol === "https:" ? url.href : "";
+    } catch {
+        return "";
+    }
+}
+
+async function verifyAdmin() {
+    const {data: sessionData, error: sessionError} =
+        await supabase.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+        window.location.href = "admin-login.html";
+        return;
+    }
+
+    currentUser = sessionData.session.user;
+
+    const {data: admin, error} = await supabase
+        .from("admin_users")
+        .select("role")
+        .eq("user_id", currentUser.id)
+        .maybeSingle();
+
+    if (error || !admin || admin.role !== "admin") {
+        await supabase.auth.signOut();
+        alert("Access denied. Admin account required.");
+        window.location.href = "admin-login.html";
+        return;
+    }
+
+    loadNews();
+}
+
+async function loadNews() {
+    newsList.textContent = "Loading news...";
+
+    const {data, error} = await supabase
+        .from("news_posts")
+        .select("*")
+        .order("created_at", {ascending: false});
+
+    if (error) {
+        newsList.textContent = "Unable to load news: " + error.message;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        newsList.textContent = "No news posts found yet.";
+        return;
+    }
+
+    newsList.innerHTML = data.map(post => {
+        const imageUrl = safeImageUrl(post.image_url);
+        const date = new Date(post.created_at).toLocaleDateString();
+
+        return `
+        <div class="news-card">
+            ${imageUrl ? `<img src="${escapeHTML(imageUrl)}" alt="News image">` : ""}
+            <div class="news-info">
+                <h3>${escapeHTML(post.title)}</h3>
+                <p>${escapeHTML(post.summary || "")}</p>
+                <p class="small">
+                    ${escapeHTML(post.category || "General")} |
+                    ${escapeHTML(date)}
+                </p>
+                <p class="status ${post.status === "published" ? "published" : "draft"}">
+                    ${post.status === "published" ? "Published" : "Draft"}
+                </p>
+                <button class="edit" data-action="edit"
+                    data-id="${escapeHTML(post.id)}">Edit</button>
+                <button class="danger" data-action="delete"
+                    data-id="${escapeHTML(post.id)}">Delete</button>
+            </div>
+        </div>`;
+    }).join("");
+
+    newsList.dataset.loaded = "true";
+}
+
+async function uploadImage(file) {
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+
+    if (!allowedTypes.includes(file.type)) {
+        throw new Error("Please select a JPG, PNG, WEBP or GIF image.");
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        throw new Error("Image size must not exceed 5 MB.");
+    }
+
+    const extension = file.name.split(".").pop().toLowerCase();
+    const filePath = `${Date.now()}-${crypto.randomUUID()}.${extension}`;
+
+    const {error} = await supabase.storage
+        .from("news-images")
+        .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: false
+        });
+
+    if (error) throw error;
+
+    const {data} = supabase.storage
+        .from("news-images")
+        .getPublicUrl(filePath);
+
+    return data.publicUrl;
+}
+
+form.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const saveBtn = document.getElementById("saveBtn");
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving...";
+
+    try {
+        const id = document.getElementById("newsId").value;
+
+        const title = document.getElementById("title").value.trim();
+        const summary = document.getElementById("summary").value.trim();
+        const content = document.getElementById("content").value.trim();
+        const category = document.getElementById("category").value;
+        const status = document.getElementById("status").value;
+        const imageFile = document.getElementById("image").files[0];
+
+        if (!title || !content) {
+            throw new Error("Title and full news content are required.");
+        }
+
+        let imageUrl = null;
+
+        if (imageFile) {
+            imageUrl = await uploadImage(imageFile);
+        }
+
+        const newsData = {
+            title,
+            summary,
+            content,
+            category,
+            status,
+            updated_at: new Date().toISOString()
+        };
+
+        if (imageUrl) {
+            newsData.image_url = imageUrl;
+        }
+
+        let result;
+
+        if (id) {
+            result = await supabase
+                .from("news_posts")
+                .update(newsData)
+                .eq("id", id);
+        } else {
+            result = await supabase
+                .from("news_posts")
+                .insert(newsData);
+        }
+
+        if (result.error) throw result.error;
+
+        showMessage(id ? "News updated successfully!" : "News saved successfully!");
+        resetForm();
+        await loadNews();
+
+    } catch (error) {
+        showMessage(error.message || "An error occurred.", "error");
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save News";
+    }
+});
+
+newsList.addEventListener("click", async function(event) {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const id = button.dataset.id;
+    const action = button.dataset.action;
+
+    if (action === "edit") {
+        const {data: post, error} = await supabase
+            .from("news_posts")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+        if (error || !post) {
+            showMessage("Unable to open this news post.", "error");
+            return;
+        }
+
+        document.getElementById("newsId").value = post.id;
+        document.getElementById("title").value = post.title;
+        document.getElementById("summary").value = post.summary || "";
+        document.getElementById("content").value = post.content;
+        document.getElementById("category").value = post.category || "General";
+        document.getElementById("status").value = post.status;
+
+        document.getElementById("formHeading").textContent = "Edit News";
+        document.getElementById("saveBtn").textContent = "Update News";
+        document.getElementById("cancelBtn").style.display = "inline-block";
+
+        document.getElementById("image").value = "";
+
+        document.getElementById("formHeading").scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+
+    if (action === "delete") {
+        if (!confirm("Are you sure you want to delete this news post?")) {
+            return;
+        }
+
+        const {error} = await supabase
+            .from("news_posts")
+            .delete()
+            .eq("id", id);
+
+        if (error) {
+            showMessage(error.message, "error");
+            return;
+        }
+
+        showMessage("News deleted successfully!");
+        resetForm();
+        loadNews();
+    }
+});
+
+function resetForm() {
+    form.reset();
+    document.getElementById("newsId").value = "";
+    document.getElementById("formHeading").textContent = "Add New News";
+    document.getElementById("saveBtn").textContent = "Save News";
+    document.getElementById("cancelBtn").style.display = "none";
+}
+
+document.getElementById("cancelBtn").addEventListener("click", resetForm);
+document.getElementById("refreshBtn").addEventListener("click", loadNews);
+
+document.getElementById("logoutBtn").addEventListener("click", async function(event) {
+    event.preventDefault();
+
+    const {error} = await supabase.auth.signOut();
+
+    if (error) {
+        showMessage(error.message, "error");
+        return;
+    }
+
+    window.location.href = "admin-login.html";
+});
+
+verifyAdmin();
+
+})();
+</script>
+
+</body>
+</html>

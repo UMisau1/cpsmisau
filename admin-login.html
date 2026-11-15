@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | CPS Misau</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        .admin-login-section {
+            max-width: 500px;
+            margin: 60px auto;
+            padding: 35px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+        }
+
+        .admin-login-section h2 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .admin-login-section p {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .admin-login-section input {
+            width: 100%;
+            padding: 13px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .admin-login-section .btn {
+            width: 100%;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        #loginMessage {
+            margin-top: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="announcement">
+        CPS Misau Old Boys Association – Administration Portal
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span>CPS Misau Old Boys Association</span>
+            </div>
+
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="page-hero">
+        <div class="container">
+            <h1>Admin Login</h1>
+            <p>Authorized Administration Access Only</p>
+        </div>
+    </section>
+
+    <main class="container">
+
+        <section class="admin-login-section">
+
+            <h2>Administrator Sign In</h2>
+
+            <p>Enter your authorized administrator account details.</p>
+
+            <form id="adminLoginForm">
+
+                <div class="form-group">
+                    <label for="adminEmail">Email Address</label>
+                    <input
+                        type="email"
+                        id="adminEmail"
+                        required
+                        placeholder="Enter admin email">
+                </div>
+
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input
+                        type="password"
+                        id="adminPassword"
+                        required
+                        placeholder="Enter password">
+                </div>
+
+                <button type="submit" class="btn" id="loginButton">
+                    Sign In
+                </button>
+
+                <p id="loginMessage" role="status"></p>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>
+                &copy; <span id="currentYear"></span>
+                Central Primary School Misau Old Boys Association.
+                All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        const SUPABASE_URL = "https://oqoloaxgyyddpniyfzyc.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable_L9eNi7R91m_CLtk6uW5EbA_IRGdfP6C";
+
+        const db = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+        const loginForm = document.getElementById("adminLoginForm");
+        const loginButton = document.getElementById("loginButton");
+        const loginMessage = document.getElementById("loginMessage");
+
+        loginForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            loginButton.disabled = true;
+            loginButton.textContent = "Verifying...";
+            loginMessage.textContent = "";
+            loginMessage.style.color = "red";
+
+            const email = document.getElementById("adminEmail").value.trim();
+            const password = document.getElementById("adminPassword").value;
+
+            try {
+                const { data, error } = await db.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                const user = data.user;
+
+                const { data: admin, error: adminError } = await db
+                    .from("admin_users")
+                    .select("role")
+                    .eq("user_id", user.id)
+                    .maybeSingle();
+
+                if (adminError) throw adminError;
+
+                if (!admin || admin.role !== "admin") {
+                    await db.auth.signOut();
+                    throw new Error(
+                        "This account is not authorized as an administrator."
+                    );
+                }
+
+                loginMessage.style.color = "green";
+                loginMessage.textContent = "Login successful. Admin verified.";
+
+                window.location.href = "admin-dashboard.html";
+
+            } catch (error) {
+                console.error("Admin Login Error:", error);
+                loginMessage.style.color = "red";
+                loginMessage.textContent = error.message;
+
+            } finally {
+                loginButton.disabled = false;
+                loginButton.textContent = "Sign In";
+            }
+        });
+    </script>
+
+</body>
+</html>

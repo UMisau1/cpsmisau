@@ -1,0 +1,700 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | CPS Misau Old Boys Association</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        .dashboard {
+            padding: 40px 0 60px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .dashboard-header h2 {
+            margin-bottom: 5px;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .dashboard-actions button {
+            cursor: pointer;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 24px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+            border-left: 5px solid #198754;
+        }
+
+        .stat-card h3 {
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card strong {
+            font-size: 30px;
+            color: #198754;
+        }
+
+        .dashboard-panel {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+            margin-bottom: 25px;
+        }
+
+        .dashboard-filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .dashboard-filters input,
+        .dashboard-filters select {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            min-width: 180px;
+            flex: 1;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .members-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        .members-table th,
+        .members-table td {
+            padding: 13px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .members-table th {
+            background: #f5f7f5;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.approved {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status.rejected {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 7px 10px;
+            border-radius: 5px;
+            margin: 2px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .approve-btn {
+            background: #198754;
+            color: white;
+        }
+
+        .reject-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .dashboard-message {
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .loading-message {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 5px;
+        }
+
+        .export-btn {
+            background: #198754;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 5px;
+        }
+
+        .refresh-btn {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 5px;
+        }
+
+        @media(max-width: 600px) {
+            .dashboard-panel {
+                padding: 15px;
+            }
+
+            .dashboard-header {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="announcement">
+        CPS Misau Old Boys Association – Administration Portal
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span>CPS Misau Old Boys Association</span>
+            </div>
+
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="members.html">Members</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="page-hero">
+        <div class="container">
+            <h1>Admin Dashboard</h1>
+            <p>Membership Registration Management</p>
+        </div>
+    </section>
+
+    <main class="container dashboard">
+
+        <div class="dashboard-header">
+            <div>
+                <h2>Welcome, Administrator</h2>
+                <p>Manage CPS Misau Old Boys Association registrations.</p>
+            </div>
+
+            <div class="dashboard-actions">
+
+    <a href="admin-news.html" class="refresh-btn"
+       style="text-decoration:none; display:inline-block;">
+        Manage News
+    </a>
+
+    <a href="admin-messages.html" class="export-btn"
+       style="text-decoration:none; display:inline-block;">
+        Manage Messages
+    </a>
+
+    <button class="refresh-btn" id="refreshButton">
+        Refresh
+    </button>
+
+    <button class="export-btn" id="exportButton">
+        Export CSV
+    </button>
+
+    <button class="logout-btn" id="logoutButton">
+        Logout
+    </button>
+
+</div>
+        </div>
+
+        <p id="dashboardMessage" class="dashboard-message"
+           role="status"></p>
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <h3>Total Registrations</h3>
+                <strong id="totalCount">0</strong>
+            </div>
+
+            <div class="stat-card">
+                <h3>Pending</h3>
+                <strong id="pendingCount">0</strong>
+            </div>
+
+            <div class="stat-card">
+                <h3>Approved</h3>
+                <strong id="approvedCount">0</strong>
+            </div>
+
+            <div class="stat-card">
+                <h3>Rejected</h3>
+                <strong id="rejectedCount">0</strong>
+            </div>
+
+        </section>
+
+        <section class="dashboard-panel">
+
+            <h2>Membership Registrations</h2>
+
+            <div class="dashboard-filters">
+
+                <input
+                    type="search"
+                    id="searchInput"
+                    placeholder="Search name, phone or graduating set">
+
+                <select id="statusFilter">
+                    <option value="all">All Registrations</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table class="members-table">
+
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Phone</th>
+                            <th>Graduating Set</th>
+                            <th>Location</th>
+                            <th>Date Registered</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="membersTableBody">
+                        <tr>
+                            <td colspan="7" class="loading-message">
+                                Loading registrations...
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <p id="tableMessage"></p>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>
+                &copy; <span id="currentYear"></span>
+                Central Primary School Misau Old Boys Association.
+                All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+
+    const SUPABASE_URL =
+        "https://oqoloaxgyyddpniyfzyc.supabase.co";
+
+    const SUPABASE_KEY =
+        "sb_publishable_L9eNi7R91m_CLtk6uW5EbA_IRGdfP6C";
+
+    const db = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+    const tableBody = document.getElementById("membersTableBody");
+    const dashboardMessage = document.getElementById("dashboardMessage");
+    const tableMessage = document.getElementById("tableMessage");
+
+    let allRegistrations = [];
+
+    function showMessage(message, color = "red") {
+        dashboardMessage.textContent = message;
+        dashboardMessage.style.color = color;
+    }
+
+    function escapeHTML(value) {
+        return String(value ?? "").replace(/[&<>"']/g, function(char) {
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            }[char];
+        });
+    }
+
+    async function verifyAdmin() {
+
+        const { data: sessionData, error: sessionError } =
+            await db.auth.getSession();
+
+        if (sessionError || !sessionData.session) {
+            window.location.replace("admin-login.html");
+            return false;
+        }
+
+        const user = sessionData.session.user;
+
+        const { data: admin, error: adminError } = await db
+            .from("admin_users")
+            .select("role")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+        if (adminError || !admin || admin.role !== "admin") {
+            await db.auth.signOut();
+            window.location.replace("admin-login.html");
+            return false;
+        }
+
+        return true;
+    }
+
+    function updateStatistics() {
+
+        document.getElementById("totalCount").textContent =
+            allRegistrations.length;
+
+        document.getElementById("pendingCount").textContent =
+            allRegistrations.filter(item => item.status === "pending").length;
+
+        document.getElementById("approvedCount").textContent =
+            allRegistrations.filter(item => item.status === "approved").length;
+
+        document.getElementById("rejectedCount").textContent =
+            allRegistrations.filter(item => item.status === "rejected").length;
+    }
+
+    async function loadRegistrations() {
+
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" class="loading-message">
+                    Loading registrations...
+                </td>
+            </tr>
+        `;
+
+        tableMessage.textContent = "";
+
+        const { data, error } = await db
+            .from("member_registrations")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+        if (error) {
+            console.error(error);
+            showMessage("Unable to load registrations: " + error.message);
+            tableBody.innerHTML = "";
+            return;
+        }
+
+        allRegistrations = data || [];
+
+        updateStatistics();
+        displayRegistrations();
+        showMessage("Registrations loaded successfully.", "green");
+    }
+
+    function displayRegistrations() {
+
+        const searchTerm =
+            document.getElementById("searchInput").value.toLowerCase().trim();
+
+        const selectedStatus =
+            document.getElementById("statusFilter").value;
+
+        const filtered = allRegistrations.filter(function(item) {
+
+            const matchesSearch =
+                (item.full_name || "").toLowerCase().includes(searchTerm) ||
+                (item.phone || "").toLowerCase().includes(searchTerm) ||
+                (item.graduation_set || "").toLowerCase().includes(searchTerm);
+
+            const matchesStatus =
+                selectedStatus === "all" ||
+                item.status === selectedStatus;
+
+            return matchesSearch && matchesStatus;
+        });
+
+        if (filtered.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="loading-message">
+                        No registrations found.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tableBody.innerHTML = filtered.map(function(item) {
+
+            const date = item.created_at
+                ? new Date(item.created_at).toLocaleDateString()
+                : "N/A";
+
+            let actions = "";
+
+            if (item.status === "pending") {
+                actions = `
+                    <button class="action-btn approve-btn"
+                        data-id="${escapeHTML(item.id)}"
+                        data-status="approved">
+                        Approve
+                    </button>
+
+                    <button class="action-btn reject-btn"
+                        data-id="${escapeHTML(item.id)}"
+                        data-status="rejected">
+                        Reject
+                    </button>
+                `;
+            } else {
+                actions = "No action";
+            }
+
+            return `
+                <tr>
+                    <td>${escapeHTML(item.full_name)}</td>
+                    <td>${escapeHTML(item.phone)}</td>
+                    <td>${escapeHTML(item.graduation_set)}</td>
+                    <td>${escapeHTML(item.location)}</td>
+                    <td>${escapeHTML(date)}</td>
+                    <td>
+                        <span class="status ${escapeHTML(item.status)}">
+                            ${escapeHTML(item.status)}
+                        </span>
+                    </td>
+                    <td>${actions}</td>
+                </tr>
+            `;
+
+        }).join("");
+    }
+
+    async function updateRegistrationStatus(id, newStatus) {
+
+        const confirmed = confirm(
+            "Are you sure you want to mark this registration as " +
+            newStatus + "?"
+        );
+
+        if (!confirmed) return;
+
+        showMessage("Updating registration...");
+
+        const { error } = await db
+            .from("member_registrations")
+            .update({ status: newStatus })
+            .eq("id", id);
+
+        if (error) {
+            console.error(error);
+            showMessage("Update failed: " + error.message);
+            return;
+        }
+
+        showMessage("Registration status updated successfully.", "green");
+
+        await loadRegistrations();
+    }
+
+    function exportCSV() {
+
+        if (allRegistrations.length === 0) {
+            alert("There are no registrations to export.");
+            return;
+        }
+
+        const columns = [
+            "Full Name",
+            "Gender",
+            "Phone",
+            "Email",
+            "Graduating Set",
+            "Admission Year",
+            "Occupation",
+            "Location",
+            "Address",
+            "Interest",
+            "Status",
+            "Date Registered"
+        ];
+
+        const rows = allRegistrations.map(item => [
+            item.full_name,
+            item.gender,
+            item.phone,
+            item.email,
+            item.graduation_set,
+            item.admission_year,
+            item.occupation,
+            item.location,
+            item.address,
+            item.interest,
+            item.status,
+            item.created_at
+        ]);
+
+        function csvValue(value) {
+            let text = String(value ?? "");
+
+            // Prevent spreadsheet formula injection.
+            if (/^[\s]*[=+\-@]/.test(text)) {
+                text = "'" + text;
+            }
+
+            return '"' + text.replace(/"/g, '""') + '"';
+        }
+
+        const csvContent = [
+            columns.map(csvValue).join(","),
+            ...rows.map(row => row.map(csvValue).join(","))
+        ].join("\r\n");
+
+        const blob = new Blob(
+            ["\uFEFF" + csvContent],
+            { type: "text/csv;charset=utf-8;" }
+        );
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = "CPS-Misau-Member-Registrations.csv";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        URL.revokeObjectURL(url);
+    }
+
+    tableBody.addEventListener("click", function(event) {
+
+        const button = event.target.closest("button[data-id]");
+
+        if (!button) return;
+
+        updateRegistrationStatus(
+            button.dataset.id,
+            button.dataset.status
+        );
+    });
+
+    document.getElementById("searchInput")
+        .addEventListener("input", displayRegistrations);
+
+    document.getElementById("statusFilter")
+        .addEventListener("change", displayRegistrations);
+
+    document.getElementById("refreshButton")
+        .addEventListener("click", loadRegistrations);
+
+    document.getElementById("exportButton")
+        .addEventListener("click", exportCSV);
+
+    document.getElementById("logoutButton")
+        .addEventListener("click", async function() {
+
+            const confirmed = confirm("Are you sure you want to logout?");
+
+            if (!confirmed) return;
+
+            await db.auth.signOut();
+
+            window.location.replace("admin-login.html");
+        });
+
+    async function startDashboard() {
+
+        try {
+            const authorized = await verifyAdmin();
+
+            if (!authorized) return;
+
+            await loadRegistrations();
+
+        } catch (error) {
+            console.error(error);
+            showMessage("Dashboard error: " + error.message);
+        }
+    }
+
+    startDashboard();
+
+    </script>
+
+</body>
+</html>
